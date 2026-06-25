@@ -29,13 +29,19 @@
             backdrop-filter: blur(5px);
             z-index: 10;
             max-width: 90%;
-            width: 400px;
+            width: 440px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .heart {
             font-size: 60px;
             color: #ff4d6d;
             animation: heartbeat 1.2s infinite;
             margin-bottom: 20px;
+            transition: all 0.5s ease;
         }
         @keyframes heartbeat {
             0% { transform: scale(1); }
@@ -49,15 +55,20 @@
             font-size: 24px;
             margin-bottom: 30px;
             line-height: 1.5;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .buttons {
             display: flex;
             justify-content: space-around;
             position: relative;
             height: 50px;
+            width: 100%;
         }
         .btn {
-            width: 100px;
+            width: 110px;
             height: 45px;
             border: none;
             border-radius: 25px;
@@ -79,7 +90,7 @@
             background-color: #adb5bd;
             color: white;
             position: absolute;
-            right: 40px;
+            right: 50px;
         }
     </style>
 </head>
@@ -87,7 +98,7 @@
 
     <div class="container">
         <div class="heart">❤️</div>
-        <h1 id="text">Meeting you is the luckiest thing <br>that ever happened to me.</h1>
+        <h1 id="text">Do you miss me?</h1>
         <div class="buttons">
             <button class="btn" id="yes-btn">Yes</button>
             <button class="btn" id="no-btn">No</button>
@@ -100,13 +111,21 @@
         const text = document.getElementById('text');
         const heart = document.querySelector('.heart');
 
-        // 当鼠标放到“No”按钮上（或手机端触摸）时，按钮随机跑路
+        const questions = [
+            "Do you miss me?", 
+            "Do you smile when you think of me?", 
+            "Do you want to share every day with me?", 
+            "Can I hold your hand from now on?" 
+        ];
+        
+        let currentStep = 0;
+
         function moveNoButton() {
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
 
-            const randomX = Math.random() * (windowWidth - 120);
-            const randomY = Math.random() * (windowHeight - 50);
+            const randomX = Math.random() * (windowWidth - 140);
+            const randomY = Math.random() * (windowHeight - 60);
 
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
@@ -116,16 +135,27 @@
         noBtn.addEventListener('mouseover', moveNoButton);
         noBtn.addEventListener('touchstart', moveNoButton);
 
-        // 点击“Yes”按钮的效果
         yesBtn.addEventListener('click', () => {
-            text.innerHTML = "Miss you, love you! ❤️<br>You make me laugh every day.";
-            // 隐藏拒绝按钮
-            noBtn.style.display = 'none';
-            // 让爱心跳动得更快
-            heart.style.animation = 'heartbeat 0.6s infinite';
-            // 放大Yes按钮并居中
-            yesBtn.style.transform = 'scale(1.2)';
-            document.querySelector('.buttons').style.justifyContent = 'center';
+            currentStep++;
+
+            if (currentStep < questions.length) {
+                text.innerHTML = questions[currentStep];
+                
+                heart.style.transform = 'scale(1.3)';
+                setTimeout(() => heart.style.transform = 'scale(1)', 200);
+                
+                noBtn.style.position = 'absolute';
+                noBtn.style.right = '50px';
+                noBtn.style.top = '0px';
+            } else {
+                text.innerHTML = "Miss you, love you! ❤️<br>The most lucky thing is to meet you.";
+                
+                noBtn.style.display = 'none';
+                heart.style.animation = 'heartbeat 0.6s infinite';
+                yesBtn.style.transform = 'scale(1.2)';
+                document.querySelector('.buttons').style.justifyContent = 'center';
+                yesBtn.innerHTML = "Forever";
+            }
         });
     </script>
 </body>
