@@ -35,13 +35,19 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: all 0.5s ease;
         }
         .heart {
             font-size: 60px;
             color: #d16b7c;
             animation: heartbeat 1.5s infinite;
             margin-bottom: 25px;
-            transition: all 0.5s ease;
+            transition: transform 0.2s ease, color 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .heart.game-mode {
+            cursor: pointer;
         }
         @keyframes heartbeat {
             0% { transform: scale(1); }
@@ -61,6 +67,17 @@
             justify-content: center;
             font-weight: 500;
             padding: 0 10px;
+            transition: opacity 0.5s ease;
+        }
+        .hint {
+            font-size: 16px;
+            color: #d16b7c;
+            margin-top: -20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            opacity: 0;
+            display: none;
+            transition: opacity 0.5s ease;
         }
         .buttons {
             display: flex;
@@ -69,6 +86,7 @@
             position: relative;
             height: 50px;
             width: 100%;
+            transition: opacity 0.5s ease;
         }
         .btn {
             width: 115px;
@@ -100,8 +118,10 @@
 <body>
 
     <div class="container">
-        <div class="heart">❤️</div>
+        <div class="heart" id="main-heart">❤️</div>
         <h1 id="text">Do you miss me?</h1>
+        <div class="hint" id="game-hint">Catch my heart if you can! 😜</div>
+        
         <div class="buttons" id="btn-group">
             <button class="btn" id="yes-btn">Yes</button>
             <button class="btn" id="no-btn">No</button>
@@ -112,39 +132,56 @@
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
         const text = document.getElementById('text');
-        const heart = document.querySelector('.heart');
+        const heart = document.getElementById('main-heart');
         const btnGroup = document.getElementById('btn-group');
+        const gameHint = document.getElementById('game-hint');
 
+        // 前三句依然需要点击 Yes 推进
         const questions = [
             "Do you miss me?", 
             "Do you smile when you think of me?", 
-            "Do you want to share your days with me?", 
-            "Posso continuare a rubarti gli sguardi?" 
+            "Do you want to share your days with me?"
         ];
         
         let currentStep = 0;
+        let isGameMode = false;
+        let score = 0;
+        const targetScore = 3;
 
+        // No 按钮在普通模式下的躲跑逻辑
         function moveNoButton() {
+            if (isGameMode) return;
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-
             const randomX = Math.random() * (windowWidth - 140);
             const randomY = Math.random() * (windowHeight - 60);
-
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
-
         noBtn.addEventListener('mouseover', moveNoButton);
         noBtn.addEventListener('touchstart', moveNoButton);
 
+        // 爱心在游戏模式下的躲跑逻辑
+        function escapeHeart() {
+            if (!isGameMode) return;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const randomX = Math.random() * (windowWidth - 120) + 40;
+            const randomY = Math.random() * (windowHeight - 120) + 40;
+            heart.style.position = 'fixed';
+            heart.style.left = randomX + 'px';
+            heart.style.top = randomY + 'px';
+            heart.style.zIndex = '999';
+        }
+
+        // 点击 Yes 按钮推进剧情
         yesBtn.addEventListener('click', () => {
             currentStep++;
 
             if (currentStep < questions.length) {
+                // 正常的下一题
                 text.innerHTML = questions[currentStep];
-                
                 heart.style.transform = 'scale(1.2)';
                 setTimeout(() => heart.style.transform = 'scale(1)', 200);
                 
@@ -152,14 +189,60 @@
                 noBtn.style.left = '235px';
                 noBtn.style.top = '0px';
             } else {
-                text.innerHTML = "Of all the paths I've taken, my favorite ones lead to you. <br><br>The most lucky thing is to meet you.";
+                // 第三题点完 Yes，正式切入第四句意大利语 + 游戏模式！
+                isGameMode = true;
+                text.innerHTML = "Posso continuare a rubarti gli sguardi?";
                 
+                // 1. 隐藏下方的普通按钮群
                 btnGroup.style.opacity = '0';
-                setTimeout(() => {
-                    btnGroup.style.display = 'none';
-                }, 500);
+                setTimeout(() => btnGroup.style.display = 'none', 500);
+
+                // 2. 显示调皮的游戏提示
+                gameHint.style.display = 'block';
+                setTimeout(() => gameHint.style.opacity = '1', 10);
+
+                // 3. 激活爱心的游戏模式样式和逃跑事件
+                heart.classList.add('game-mode');
+                heart.addEventListener('mouseover', escapeHeart);
+                heart.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    escapeHeart();
+                });
+            }
+        });
+
+        // 只有在游戏模式下，点击爱心才会计分
+        heart.addEventListener('click', () => {
+            if (!isGameMode) return;
+            
+            score++;
+            
+            if (score < targetScore) {
+                heart.style.color = '#c1121f';
+                heart.style.animationDuration = (1.5 - score * 0.4) + 's';
+                gameHint.innerHTML = `Caught me ${score} time${score > 1 ? 's' : ''}! ${targetScore - score} more to go! 😜`;
+                escapeHeart();
+            } else {
+                // 抓满3次，通关大结局
+                isGameMode = false;
                 
-                heart.style.animation = 'heartbeat 0.8s infinite';
+                // 隐藏提示
+                gameHint.style.opacity = '0';
+                setTimeout(() => gameHint.style.display = 'none', 500);
+
+                // 爱心归位、放大、定格
+                heart.style.position = 'static';
+                heart.style.transform = 'scale(1.2)';
+                heart.style.color = '#d16b7c';
+                heart.style.animation = 'heartbeat 1s infinite';
+                
+                // 展现最终那句充满宿命感的唯美留白
+                text.style.opacity = '0';
+                setTimeout(() => {
+                    text.style.fontSize = '20px';
+                    text.innerHTML = "Of all the paths I've taken, my favorite ones lead to you. <br><br>The most lucky thing is to meet you.";
+                    text.style.opacity = '1';
+                }, 500);
             }
         });
     </script>
