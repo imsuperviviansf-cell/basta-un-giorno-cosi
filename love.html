@@ -30,18 +30,24 @@
             z-index: 10;
             max-width: 90%;
             width: 440px;
-            min-height: 320px;
+            min-height: 340px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             transition: all 0.5s ease;
         }
+        .heart-box {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
         .heart {
             font-size: 60px;
             color: #d16b7c;
             animation: heartbeat 1.5s infinite;
-            margin-bottom: 25px;
             transition: transform 0.2s ease, color 0.3s ease;
             user-select: none;
             -webkit-user-select: none;
@@ -118,7 +124,9 @@
 <body>
 
     <div class="container">
-        <div class="heart" id="main-heart">❤️</div>
+        <div class="heart-box">
+            <div class="heart" id="main-heart">❤️</div>
+        </div>
         <h1 id="text">Do you miss me?</h1>
         <div class="hint" id="game-hint">Catch my heart if you can! 😜</div>
         
@@ -136,7 +144,6 @@
         const btnGroup = document.getElementById('btn-group');
         const gameHint = document.getElementById('game-hint');
 
-        // 前三句依然需要点击 Yes 推进
         const questions = [
             "Do you miss me?", 
             "Do you smile when you think of me?", 
@@ -148,7 +155,6 @@
         let score = 0;
         const targetScore = 3;
 
-        // No 按钮在普通模式下的躲跑逻辑
         function moveNoButton() {
             if (isGameMode) return;
             const windowWidth = window.innerWidth;
@@ -162,7 +168,6 @@
         noBtn.addEventListener('mouseover', moveNoButton);
         noBtn.addEventListener('touchstart', moveNoButton);
 
-        // 爱心在游戏模式下的躲跑逻辑
         function escapeHeart() {
             if (!isGameMode) return;
             const windowWidth = window.innerWidth;
@@ -175,12 +180,10 @@
             heart.style.zIndex = '999';
         }
 
-        // 点击 Yes 按钮推进剧情
         yesBtn.addEventListener('click', () => {
             currentStep++;
 
             if (currentStep < questions.length) {
-                // 正常的下一题
                 text.innerHTML = questions[currentStep];
                 heart.style.transform = 'scale(1.2)';
                 setTimeout(() => heart.style.transform = 'scale(1)', 200);
@@ -189,20 +192,20 @@
                 noBtn.style.left = '235px';
                 noBtn.style.top = '0px';
             } else {
-                // 第三题点完 Yes，正式切入第四句意大利语 + 游戏模式！
+                // 进入第4步游戏模式
                 isGameMode = true;
                 text.innerHTML = "Posso continuare a rubarti gli sguardi?";
                 
-                // 1. 隐藏下方的普通按钮群
                 btnGroup.style.opacity = '0';
                 setTimeout(() => btnGroup.style.display = 'none', 500);
 
-                // 2. 显示调皮的游戏提示
                 gameHint.style.display = 'block';
                 setTimeout(() => gameHint.style.opacity = '1', 10);
 
-                // 3. 激活爱心的游戏模式样式和逃跑事件
                 heart.classList.add('game-mode');
+                // 触发第一次逃跑
+                escapeHeart();
+                
                 heart.addEventListener('mouseover', escapeHeart);
                 heart.addEventListener('touchstart', (e) => {
                     e.preventDefault();
@@ -211,7 +214,6 @@
             }
         });
 
-        // 只有在游戏模式下，点击爱心才会计分
         heart.addEventListener('click', () => {
             if (!isGameMode) return;
             
@@ -223,20 +225,16 @@
                 gameHint.innerHTML = `Caught me ${score} time${score > 1 ? 's' : ''}! ${targetScore - score} more to go! 😜`;
                 escapeHeart();
             } else {
-                // 抓满3次，通关大结局
                 isGameMode = false;
                 
-                // 隐藏提示
                 gameHint.style.opacity = '0';
                 setTimeout(() => gameHint.style.display = 'none', 500);
 
-                // 爱心归位、放大、定格
                 heart.style.position = 'static';
                 heart.style.transform = 'scale(1.2)';
                 heart.style.color = '#d16b7c';
                 heart.style.animation = 'heartbeat 1s infinite';
                 
-                // 展现最终那句充满宿命感的唯美留白
                 text.style.opacity = '0';
                 setTimeout(() => {
                     text.style.fontSize = '20px';
