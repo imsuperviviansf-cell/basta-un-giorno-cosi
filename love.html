@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>to the most special you  ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            max-width: 90%;
+            width: 400px;
+        }
+        .heart {
+            font-size: 60px;
+            color: #ff4d6d;
+            animation: heartbeat 1.2s infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            position: relative;
+            height: 50px;
+        }
+        .btn {
+            width: 100px;
+            height: 45px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        #yes-btn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        }
+        #yes-btn:hover {
+            transform: scale(1.1);
+            background-color: #ff758f;
+        }
+        #no-btn {
+            background-color: #adb5bd;
+            color: white;
+            position: absolute;
+            right: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="heart">❤️</div>
+        <h1 id="text">the most lucky thing ，<br>is to meet you </h1>
+        <div class="buttons">
+            <button class="btn" id="yes-btn">好呀</button>
+            <button class="btn" id="no-btn">不要</button>
+        </div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const text = document.getElementById('text');
+        const heart = document.querySelector('.heart');
+
+        // 当鼠标放到“不要”按钮上（或手机端触摸）时，按钮随机跑路
+        function moveNoButton() {
+            // 获取浏览器窗口大小
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // 随机生成新坐标，确保按钮留在屏幕内
+            const randomX = Math.random() * (windowWidth - 120);
+            const randomY = Math.random() * (windowHeight - 50);
+
+            // 让按钮脱离原本的容器，绝对定位到屏幕随机位置
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton);
+
+        // 点击“好呀”按钮的效果
+        yesBtn.addEventListener('click', () => {
+            text.innerHTML = miss you ,love you "❤️<br>you make my laugh everyday";
+            // 隐藏拒绝按钮
+            noBtn.style.display = 'none';
+            // 让爱心跳动得更快
+            heart.style.animation = 'heartbeat 0.6s infinite';
+            // 居中好呀按钮
+            yesBtn.style.transform = 'scale(1.2)';
+            document.querySelector('.buttons').style.justifyContent = 'center';
+        });
+    </script>
+</body>
+</html>
