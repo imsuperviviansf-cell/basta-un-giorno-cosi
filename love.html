@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>to the most special you  ❤️</title>
+    <title>To the most special you ❤️</title>
     <style>
         * {
             margin: 0;
@@ -17,7 +17,7 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
-            font-family: 'Microsoft YaHei', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
         .container {
@@ -87,10 +87,10 @@
 
     <div class="container">
         <div class="heart">❤️</div>
-        <h1 id="text">the most lucky thing ，<br>is to meet you </h1>
+        <h1 id="text">Meeting you is the luckiest thing <br>that ever happened to me.</h1>
         <div class="buttons">
-            <button class="btn" id="yes-btn">好呀</button>
-            <button class="btn" id="no-btn">不要</button>
+            <button class="btn" id="yes-btn">Yes</button>
+            <button class="btn" id="no-btn">No</button>
         </div>
     </div>
 
@@ -100,17 +100,14 @@
         const text = document.getElementById('text');
         const heart = document.querySelector('.heart');
 
-        // 当鼠标放到“不要”按钮上（或手机端触摸）时，按钮随机跑路
+        // 当鼠标放到“No”按钮上（或手机端触摸）时，按钮随机跑路
         function moveNoButton() {
-            // 获取浏览器窗口大小
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
 
-            // 随机生成新坐标，确保按钮留在屏幕内
             const randomX = Math.random() * (windowWidth - 120);
             const randomY = Math.random() * (windowHeight - 50);
 
-            // 让按钮脱离原本的容器，绝对定位到屏幕随机位置
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
@@ -119,14 +116,14 @@
         noBtn.addEventListener('mouseover', moveNoButton);
         noBtn.addEventListener('touchstart', moveNoButton);
 
-        // 点击“好呀”按钮的效果
+        // 点击“Yes”按钮的效果
         yesBtn.addEventListener('click', () => {
-            text.innerHTML = miss you ,love you "❤️<br>you make my laugh everyday";
+            text.innerHTML = "Miss you, love you! ❤️<br>You make me laugh every day.";
             // 隐藏拒绝按钮
             noBtn.style.display = 'none';
             // 让爱心跳动得更快
             heart.style.animation = 'heartbeat 0.6s infinite';
-            // 居中好呀按钮
+            // 放大Yes按钮并居中
             yesBtn.style.transform = 'scale(1.2)';
             document.querySelector('.buttons').style.justifyContent = 'center';
         });
